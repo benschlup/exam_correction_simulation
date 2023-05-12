@@ -1,0 +1,124 @@
+# Simulation script: Exam correction scenario
+# Benjamin Schlup, Student ID 200050007
+
+########################################################################################################################
+# The correction of exams by a human-machine team is simulated. The scenario is based on
+#
+# Burkhard, M., Guggemos, J. and Seufert, S. (2022) 'Who is Best Suited for the Job? Task Allocation Process Between
+#           Teachers and Smart Machines Based on Comparative Strengths': Springer International Publishing, pp. 3-23.
+#           https://doi.org/10.1007/978-3-031-14756-2_1
+#
+########################################################################################################################
+storybookTasks:
+# The story below encompasses the following tasks to be performed by the
+# simulated HIS: Papers from 20 students are concurrently "put onto the table" of the computational agent:
+- { taskName: Correct exam paper 01, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 02, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 03, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 04, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 05, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 06, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 07, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 08, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 09, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 10, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 11, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 12, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 13, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 14, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 15, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 16, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 17, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 18, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 19, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+- { taskName: Correct exam paper 20, compositeTask: Correct exam paper, startTimeISO8601: 2023-01-03T07:00:00Z }
+
+########################################################################################################################
+compositeTaskDefinitions:
+# The only composite task in this simulation script is the "Correct exam paper",
+# defined as follows:
+  Correct exam paper:
+    atomicTasks:
+      - situation: Closed-ended questions not yet corrected
+        operation: Correct closed-ended questions
+
+      - situation: Answer groups for open-ended questions not determined
+        operation: Identify answer groups for open-ended questions
+
+      - situation: Open-ended questions not yet corrected
+        operation: Correct open-ended questions
+
+      - situation: Total points not counted
+        operation: Count total points
+
+
+########################################################################################################################
+# Here follow the individual atomic tasks and situations used in composite tasks
+atomicTaskDefinitions:
+  - situation: Closed-ended questions not yet corrected
+    preConditions:
+      - '! closed_ended_questions_corrected'
+    operation: Correct closed-ended questions
+    postConditions:
+      - '+ closed_ended_questions_corrected'
+    caConfig:
+      initialKnowledge: true
+      evaluation:
+        initialTime: 1
+      execution:
+        initialTime: 10
+
+  - situation: Answer groups for open-ended questions not determined
+    preConditions:
+      - '! answer_groups_identified'
+    operation: Identify answer groups for open-ended questions
+    postConditions:
+      - '+ answer_groups_identified'
+    caConfig:
+      initialKnowledge: true
+      evaluation:
+        initialTime: 0
+      execution:
+        initialTime: 5
+
+  - situation: Open-ended questions not yet corrected
+    preConditions:
+      - '! open_ended_questions_corrected'
+      - 'answer_groups_identified'
+    operation: Correct open-ended questions
+    minimumQuality: 0.95
+    maximumRetries: 2
+    postConditions:
+      - '+ open_ended_questions_corrected'
+    caConfig:
+      initialKnowledge: true
+      evaluation:
+        initialTime: 0
+      execution:
+        initialTime: 10
+        initialQuality: 0.9
+    haConfig:
+      initialKnowledge: true
+      evaluation:
+        initialTime: 0
+      execution:
+        initialTime: 300
+        initialQuality: 0.95
+
+  - situation: Total points not counted
+    preConditions:
+      - 'open_ended_questions_corrected'
+      - 'closed_ended_questions_corrected'
+      - '! total_points_counted'
+    operation: Count total points
+    postConditions:
+      - '+ total_points_counted'
+    caConfig:
+      initialKnowledge: true
+      evaluation:
+        initialTime: 1
+      execution:
+        initialTime: 3
+
+
+# End of simulation task specification.
