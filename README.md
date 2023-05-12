@@ -10,4 +10,4 @@ Hybrid Intelligence Simulation using hi_simulator
 ### Ben Schlup (ben.schlup@schlup.com)
 
 ---
-This configuration of a Hybrid Intelligent System can used used with [hi_simulator](https://github.com/benschlup/hi_simulator) to evaluate behaviour and performance of varying Hybrind Intelligent System designs. 
+This configuration of a Hybrid Intelligent System can used used with [hi_simulator](https://github.com/benschlup/hi_simulator) to evaluate behaviour and performance of varying Hybrid Intelligent System designs. 
