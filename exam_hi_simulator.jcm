@@ -1,0 +1,47 @@
+/*
+    exam_hi_simulator
+    Benjamin Schlup, Student ID 200050007
+    ---------------------------
+    JaCaMo Application File defining the initial state of the MAS (initial agents, environment) for simulating
+    the correction of exams by a human-machine team.
+
+    Below scenario assumes three agents:
+    - Computational Agent (CSA)
+    - Human Teacher Agent (HT)
+
+    Optionally, a monitoring agent that performs logging can be added:
+    - Monitoring agent for blackboard events
+*/
+
+mas hi_simulator {
+
+    agent ht: human_teacher.asl {
+        beliefs:    agent_type("HA"), agent_displayname("Human Teacher"),
+                    refocusing_time(60), note_taking_time(30)
+        focus:      control.logger, control.timer, tasks.taskBoard, tasks.taskSet
+    }
+
+    agent csa: computational_agent.asl {
+        beliefs:    agent_type("CA"), agent_displayname("Computational Agent")
+        focus:      control.logger, control.timer, tasks.taskBoard, tasks.taskSet
+    }
+
+    agent mona: monitoring_agent.asl {
+        focus:      control.logger, tasks.taskBoard
+    }
+
+    workspace control {
+        artifact logger: control.LoggerArtifact("Base Logging Window", "log\\hi_simulator_log.csv")
+        artifact timer: control.TimerArtifact("2023-01-03T06:55:00.00Z",130)
+        agents: csa, ht
+    }
+
+    workspace tasks {
+        artifact taskSet: task.TaskSetArtifact("cfg\\exam_correction.yaml", "task_")
+        artifact taskBoard: task.BlackboardArtifact
+        agents: csa, ht
+    }
+
+    class-path: lib
+}
+
